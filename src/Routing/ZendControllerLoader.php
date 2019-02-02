@@ -41,11 +41,11 @@ class ZendControllerLoader extends Loader
         foreach ($this->getControllerIterator($directoryPath) as $path => $info) {
             $class = $this->findClass($path);
 
-            list($controllerRoutePart) = explode('Controller', $class);
-            $controllerRoutePart = strtolower($this->camelCaseToDashFilter->filter($controllerRoutePart));
-
             $reflector = new \ReflectionClass($class);
             $methods = $reflector->getMethods();
+
+            list($controllerRoutePart) = explode('Controller', $reflector->getShortName());
+            $controllerRoutePart = strtolower($this->camelCaseToDashFilter->filter($controllerRoutePart));
 
             foreach ($methods as $method) {
                 if (strpos($method->getName(), 'Action') === false) {
@@ -71,7 +71,7 @@ class ZendControllerLoader extends Loader
 
     private function getControllerIterator(string $path)
     {
-        $resource =  new GlobResource($path, '*Controller.php', false);
+        $resource =  new GlobResource($path, '', true);
 
         yield from $resource;
     }
@@ -169,6 +169,6 @@ class ZendControllerLoader extends Loader
             ]
         );
 
-        $routeCollection->add('zend_' . $controllerRoutePart . $methodRoutePart, $route);
+        $routeCollection->add('zend_' . $controllerRoutePart . '_' . $methodRoutePart, $route);
     }
 }
