@@ -4,10 +4,15 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="zymfony.routing.custom_routes" type="collection" />
+    </parameters>
+
     <services>
         <service id="zymfony.routing.loader.zend_controller" class="SAA\ZymfonyBundle\Routing\ZendControllerLoader" public="false">
             <tag name="routing.loader" />
             <argument type="service" id="file_locator" />
+            <argument>%zymfony.routing.custom_routes%</argument>
         </service>
     </services>
 </container>

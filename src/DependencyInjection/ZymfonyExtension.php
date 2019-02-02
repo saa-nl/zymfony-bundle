@@ -16,10 +16,20 @@ class ZymfonyExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $configuration = $this->getConfiguration($configs, $container);
+        $config = $this->processConfiguration($configuration, $configs);
+
         $loader = new XmlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../Resources/config')
         );
-        $loader->load('services.xml');
+
+        if ($config['routing']['enabled'] === true) {
+            $loader->load('routing.xml');
+
+            if (array_key_exists('custom_routes', $config['routing'])) {
+                $container->setParameter('zymfony.routing.custom_routes', $config['routing']['custom_routes']);
+            }
+        }
     }
 }

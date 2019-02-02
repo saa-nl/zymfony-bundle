@@ -24,9 +24,15 @@ class ZendControllerLoader extends Loader
      */
     private $camelCaseToDashFilter;
 
-    public function __construct(FileLocatorInterface $fileLocator)
+    /**
+     * @var array
+     */
+    private $customRoutes;
+
+    public function __construct(FileLocatorInterface $fileLocator, array $customRoutes)
     {
         $this->fileLocator = $fileLocator;
+        $this->customRoutes = $customRoutes;
         $this->camelCaseToDashFilter = new \Zend_Filter_Word_CamelCaseToDash();
     }
 
@@ -42,6 +48,11 @@ class ZendControllerLoader extends Loader
 
         $directoryPath = $this->fileLocator->locate($resource);
 
+        $customRouteIndex = 1;
+        foreach ($this->customRoutes as $route => $controller) {
+            $this->addRoute($routeCollection, 'zend_custom' . $customRouteIndex, $route, $controller);
+        }
+
         foreach ($this->getControllerIterator($directoryPath) as $path => $info) {
             $class = $this->findClass($path);
 
@@ -56,12 +67,13 @@ class ZendControllerLoader extends Loader
                     continue;
                 }
 
-                $this->addRouteFromMethod($routeCollection, $method, $controllerRoutePart);
+                $methodRoutePart = $this->getMethodRoutePart($method);
+                $this->addRouteFromMethod($routeCollection, $controllerRoutePart, $method, $methodRoutePart);
             }
 
             if ($reflector->hasMethod('indexAction')) {
                 // Has to be ordered last to not conflict with other routes' parameters
-                $this->addRoute($routeCollection, $controllerRoutePart, $reflector->getMethod('indexAction'));
+                $this->addRouteFromMethod($routeCollection, $controllerRoutePart, $reflector->getMethod('indexAction'));
             }
         }
 
@@ -152,27 +164,7 @@ class ZendControllerLoader extends Loader
         return false;
     }
 
-    /**
-     * @param RouteCollection $routeCollection
-     * @param \ReflectionMethod $method
-     * @param string $controllerRoutePart
-     */
     private function addRouteFromMethod(
-        RouteCollection $routeCollection,
-        \ReflectionMethod $method,
-        string $controllerRoutePart
-    ) {
-        $methodRoutePart = str_replace('Action', '', $method->getName());
-        $methodRoutePart = str_replace(
-            ' ',
-            '-',
-            trim(strtolower($this->camelCaseToDashFilter->filter($methodRoutePart)))
-        );
-
-        $this->addRoute($routeCollection, $controllerRoutePart, $method, $methodRoutePart);
-    }
-
-    private function addRoute(
         RouteCollection $routeCollection,
         string $controllerRoutePart,
         \ReflectionMethod $method,
@@ -185,15 +177,12 @@ class ZendControllerLoader extends Loader
             $routeName .= '_' . $methodRoutePart;
         }
 
-        $route = new Route(
-            $path . $this->buildRouteVars(),
-            [
-                '_controller' => $method->getDeclaringClass()->getName() . '::' . $method->getName(),
-            ]
+        $this->addRoute(
+            $routeCollection,
+            $routeName,
+            $path,
+            $method->getDeclaringClass()->getName() . '::' . $method->getName()
         );
-        $route->addDefaults($this->buildRouteDefaults());
-
-        $routeCollection->add($routeName, $route);
     }
 
     private function buildRouteVars(): string
@@ -215,5 +204,28 @@ class ZendControllerLoader extends Loader
         }
 
         return $defaults;
+    }
+
+    private function addRoute(
+        RouteCollection $routeCollection,
+        string $routeName,
+        string $path,
+        string $controller
+    ) {
+        $route = new Route($path . $this->buildRouteVars(), ['_controller' => $controller]);
+        $route->addDefaults($this->buildRouteDefaults());
+
+        $routeCollection->add($routeName, $route);
+    }
+
+    private function getMethodRoutePart(\ReflectionMethod $method): string
+    {
+        $methodRoutePart = str_replace('Action', '', $method->getName());
+        $methodRoutePart = str_replace(
+            ' ',
+            '-',
+            trim(strtolower($this->camelCaseToDashFilter->filter($methodRoutePart)))
+        );
+        return $methodRoutePart;
     }
 }
