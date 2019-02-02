@@ -12,9 +12,10 @@
   ],
   "require": {
     "php": "^7.1",
-    "symfony/http-kernel": "^4.2",
-    "symfony/dependency-injection": "^4.2",
     "symfony/config": "^4.2",
+    "symfony/dependency-injection": "^4.2",
+    "symfony/http-kernel": "^4.2",
+    "symfony/routing": "^4.2",
     "zendframework/zendframework1": "^1.12"
   },
   "autoload": {
