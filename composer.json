@@ -1,0 +1,28 @@
+{
+  "name": "saa/zymfony-bundle",
+  "type": "symfony-bundle",
+  "description": "Components to migrate ZF1 to SF4",
+  "keywords": [],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Deniz Zoeteman",
+      "email": "dkzoeteman@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "symfony/http-kernel": "^4.2",
+    "symfony/dependency-injection": "^4.2",
+    "symfony/config": "^4.2",
+    "zendframework/zendframework1": "^1.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "SAA\\ZymfonyBundle\\": "src/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
