@@ -51,6 +51,7 @@ class ZendControllerLoader extends Loader
         $customRouteIndex = 1;
         foreach ($this->customRoutes as $route => $controller) {
             $this->addRoute($routeCollection, 'zend_custom' . $customRouteIndex, $route, $controller);
+            $customRouteIndex++;
         }
 
         foreach ($this->getControllerIterator($directoryPath) as $path => $info) {
