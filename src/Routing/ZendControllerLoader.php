@@ -10,6 +10,10 @@ use Symfony\Component\Routing\RouteCollection;
 
 class ZendControllerLoader extends Loader
 {
+    public const PARAM_KEY_KEY = 'zfkey';
+    public const PARAM_KEY_VAL = 'zfval';
+    private const ROUTE_PARAMS_MAX = 10;
+
     /**
      * @var FileLocatorInterface
      */
@@ -182,12 +186,34 @@ class ZendControllerLoader extends Loader
         }
 
         $route = new Route(
-            $path,
+            $path . $this->buildRouteVars(),
             [
                 '_controller' => $method->getDeclaringClass()->getName() . '::' . $method->getName(),
             ]
         );
+        $route->addDefaults($this->buildRouteDefaults());
 
         $routeCollection->add($routeName, $route);
+    }
+
+    private function buildRouteVars(): string
+    {
+        $routePath = '';
+        for ($i = 1; $i <= self::ROUTE_PARAMS_MAX; $i++) {
+            $routePath .= '/{' . self::PARAM_KEY_KEY . $i . '}/{' . self::PARAM_KEY_VAL . $i . '}';
+        }
+
+        return $routePath;
+    }
+
+    private function buildRouteDefaults(): array
+    {
+        $defaults = [];
+        for ($i = 1; $i <= self::ROUTE_PARAMS_MAX; $i++) {
+            $defaults[self::PARAM_KEY_KEY. $i] = null;
+            $defaults[self::PARAM_KEY_VAL . $i] = null;
+        }
+
+        return $defaults;
     }
 }
