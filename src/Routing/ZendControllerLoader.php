@@ -54,6 +54,11 @@ class ZendControllerLoader extends Loader
 
                 $this->addRouteFromMethod($routeCollection, $method, $controllerRoutePart);
             }
+
+            if ($reflector->hasMethod('indexAction')) {
+                // Has to be ordered last to not conflict with other routes' parameters
+                $this->addRoute($routeCollection, $controllerRoutePart, $reflector->getMethod('indexAction'));
+            }
         }
 
         return $routeCollection;
@@ -153,22 +158,36 @@ class ZendControllerLoader extends Loader
         \ReflectionMethod $method,
         string $controllerRoutePart
     ) {
-        $methodName = $method->getName();
-
-        $methodRoutePart = str_replace('Action', '', $methodName);
+        $methodRoutePart = str_replace('Action', '', $method->getName());
         $methodRoutePart = str_replace(
             ' ',
             '-',
             trim(strtolower($this->camelCaseToDashFilter->filter($methodRoutePart)))
         );
 
+        $this->addRoute($routeCollection, $controllerRoutePart, $method, $methodRoutePart);
+    }
+
+    private function addRoute(
+        RouteCollection $routeCollection,
+        string $controllerRoutePart,
+        \ReflectionMethod $method,
+        ?string $methodRoutePart = null
+    ) {
+        $path = '/' . $controllerRoutePart;
+        $routeName = 'zend_' . $controllerRoutePart;
+        if ($methodRoutePart !== null) {
+            $path .= '/' . $methodRoutePart;
+            $routeName .= '_' . $methodRoutePart;
+        }
+
         $route = new Route(
-            '/' . $controllerRoutePart . '/' . $methodRoutePart,
+            $path,
             [
-                '_controller' => $method->getDeclaringClass()->getName() . '::' . $methodName,
+                '_controller' => $method->getDeclaringClass()->getName() . '::' . $method->getName(),
             ]
         );
 
-        $routeCollection->add('zend_' . $controllerRoutePart . '_' . $methodRoutePart, $route);
+        $routeCollection->add($routeName, $route);
     }
 }
