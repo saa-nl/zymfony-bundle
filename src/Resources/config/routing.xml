@@ -14,5 +14,9 @@
             <argument type="service" id="file_locator" />
             <argument>%zymfony.routing.custom_routes%</argument>
         </service>
+
+        <service id="zymfony.routing.listener.routing_param_converter" class="SAA\ZymfonyBundle\EventListener\RoutingParamConverterListener" public="false">
+            <tag name="kernel.event_subscriber" />
+        </service>
     </services>
 </container>
