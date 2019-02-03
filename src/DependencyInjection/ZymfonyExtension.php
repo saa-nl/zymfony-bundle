@@ -31,5 +31,9 @@ class ZymfonyExtension extends Extension
                 $container->setParameter('zymfony.routing.custom_routes', $config['routing']['custom_routes']);
             }
         }
+
+        if ($config['registry']['enabled'] === true) {
+            $loader->load('registry.xml');
+        }
     }
 }
