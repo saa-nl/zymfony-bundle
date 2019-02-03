@@ -2,16 +2,16 @@
 
 namespace SAA\ZymfonyBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Registry extends \Zend_Registry
 {
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     private static $container;
 
-    public static function setContainer(Container $container)
+    public static function setContainer(ContainerInterface $container)
     {
         self::$container = $container;
     }
