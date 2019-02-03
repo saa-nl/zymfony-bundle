@@ -32,6 +32,7 @@ class RegistryListener implements EventSubscriberInterface
         $zymfonyRegistryInstance->setContainer($this->container);
 
         \Zend_Registry::_unsetInstance();
+        \Zend_Registry::setClassName(Registry::class);
         \Zend_Registry::setInstance($zymfonyRegistryInstance);
     }
 
