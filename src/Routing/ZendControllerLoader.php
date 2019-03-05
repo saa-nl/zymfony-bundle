@@ -10,6 +10,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 class ZendControllerLoader extends Loader
 {
+    public const ZYMFONY_ROUTE_PREFIX = 'zymfony_';
     public const PARAM_KEY_KEY = 'ckey';
     public const PARAM_KEY_VAL = 'cval';
     private const ROUTE_PARAMS_MAX = 10;
