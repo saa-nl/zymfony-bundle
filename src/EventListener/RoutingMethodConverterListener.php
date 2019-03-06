@@ -12,6 +12,10 @@ class RoutingMethodConverterListener implements EventSubscriberInterface
     public function onKernelControllerArguments(FilterControllerArgumentsEvent $event)
     {
         $controller = $event->getController();
+        if ($controller[0] instanceof \Zend_Controller_Action === false) {
+            return;
+        }
+
         $event->setController([
             $controller[0],
             ZendControllerLoader::ROUTE_PREFIX . $controller[1]
