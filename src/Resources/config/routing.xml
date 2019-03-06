@@ -22,5 +22,9 @@
         <service id="zymfony.routing.listener.request_converter" class="SAA\ZymfonyBundle\EventListener\RequestConverterListener" public="false">
             <tag name="kernel.event_subscriber" />
         </service>
+
+        <service id="zymfony.routing.listener.routing_method_converter" class="SAA\ZymfonyBundle\EventListener\RoutingMethodConverterListener" public="false">
+            <tag name="kernel.event_subscriber" />
+        </service>
     </services>
 </container>
