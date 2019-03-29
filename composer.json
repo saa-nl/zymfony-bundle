@@ -7,7 +7,11 @@
   "authors": [
     {
       "name": "Deniz Zoeteman",
-      "email": "dkzoeteman@gmail.com"
+      "email": "dzoeteman@saa.nl"
+    },
+    {
+      "name": "Richard Hoogstad",
+      "email": "rhoogstad@saa.nl"
     }
   ],
   "require": {
