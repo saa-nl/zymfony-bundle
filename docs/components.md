@@ -16,4 +16,4 @@ The registry component replaces the `Zend_Registry` instance with one that will 
 
 The request bridge provies an easy way to go between Symfony requests and Zend requests, which may be useful in your migration.
 
-[Documnetation](components/request_bridge.md)
+[Documentation](components/request_bridge.md)
