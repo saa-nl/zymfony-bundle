@@ -38,7 +38,7 @@ The BaseController also needs a caller and optionally a renderer to function. Yo
 
 **Caller**
 
-The caller should be the one to actually call the action in the ZF1 controller. You can use this to, for example, call the action with a different DI container, if you're using one. The interface allows to return a Symfony `Response` object, or `null`. If `null` is returned, the renderer is needed and will be called. The caller should implement the `kernel.ControllerActionCallerInterface`.
+The caller should be the one to actually call the action in the ZF1 controller. You can use this to, for example, call the action with a different DI container, if you're using one. The interface allows to return a Symfony `Response` object, or `null`. If `null` is returned, the renderer is needed and will be called. The caller should implement the `ControllerActionCallerInterface`.
 
 **Renderer**
 
